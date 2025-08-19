@@ -1,17 +1,33 @@
 document.getElementById("tankForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
+  const fields = ["width", "depth", "height", "distance"];
+  let hasError = false;
+
+  // Rensa tidigare fel
+  fields.forEach(id => {
+    document.getElementById(id).classList.remove("invalid");
+    document.getElementById("error-" + id).textContent = "";
+  });
+
+  // Kontrollera negativa värden
+  fields.forEach(id => {
+    const value = parseFloat(document.getElementById(id).value);
+    if (isNaN(value) || value < 0) {
+      document.getElementById(id).classList.add("invalid");
+      document.getElementById("error-" + id).textContent = "Värdet måste vara positivt.";
+      hasError = true;
+    }
+  });
+
+  if (hasError) return;
+
+  // Beräkningar
   const wall = 0.004;
   const width = parseFloat(document.getElementById("width").value);
   const depth = parseFloat(document.getElementById("depth").value);
   const height = parseFloat(document.getElementById("height").value);
   const distance = parseFloat(document.getElementById("distance").value) / 100;
-
-  // Kontrollera negativa värden
-  if (width <= 0 || depth <= 0 || height <= 0 || distance < 0) {
-    alert("Alla mått måste vara positiva värden.");
-    return;
-  }
 
   const innerW = width - 2 * wall;
   const innerD = depth - 2 * wall;
@@ -27,19 +43,35 @@ document.getElementById("tankForm").addEventListener("submit", function (e) {
   if (pct < 20) color = "red";
   else if (pct < 50) color = "orange";
 
-  const result = `
-    <h2>Result</h2>
-    <p>Fuel Level: ${level.toFixed(2)} m</p>
-    <p>Volume: ${fuel_m3.toFixed(2)} m³ (${fuel_L.toFixed(2)} L)</p>
-    <p>Degree of filling: ${pct.toFixed(1)}%</p>
+  const resultContainer = document.getElementById("result");
+  resultContainer.innerHTML = `
+    <h2>Resultat</h2>
+    <p>Bränslenivå: ${level.toFixed(2)} m</p>
+    <p>Volym: ${fuel_m3.toFixed(2)} m³ (${fuel_L.toFixed(2)} L)</p>
+    <p>Fyllnadsgrad: ${pct.toFixed(1)}%</p>
     <div class="bar">
-      <div class="fill" style="width:${pct}%; background:${color};">${pct.toFixed(1)}%</div>
+      <div class="fill" id="fillBar" style="width:0%; background:${color};">${pct.toFixed(1)}%</div>
     </div>
-    ${pct < 10 ? `<p>📦 Order at least ${Math.round((total_m3 * 0.99 - fuel_m3) * 1000)} L to get 99% filling.</p>` :
-      pct < 20 ? `<p>📦 Prepare for ordering fuel soon.</p>` :
-      `<p>📦 No order needed now.</p>`}
-    ${pct < 20 ? `<p>⚠️ Warning: low level!</p>` : ""}
+    ${pct < 10 ? `<p>📦 Beställ minst ${Math.round((total_m3 * 0.99 - fuel_m3) * 1000)} L för att nå 99% fyllnad.</p>` :
+      pct < 20 ? `<p>📦 Planera bränslebeställning snart.</p>` :
+      `<p>📦 Ingen beställning behövs just nu.</p>`}
+    ${pct < 20 ? `<p>⚠️ Varning: låg bränslenivå!</p>` : ""}
+    <button id="resetBtn" style="margin-top: 1.5em;">🔄 Ny beräkning</button>
   `;
 
-  document.getElementById("result").innerHTML = result;
+  // Trigga animationen
+  setTimeout(() => {
+    const fillBar = document.getElementById("fillBar");
+    fillBar.style.width = `${pct}%`;
+  }, 100);
+
+  // Lägg till funktion för "Ny beräkning"
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("tankForm").reset();
+    resultContainer.innerHTML = "";
+    fields.forEach(id => {
+      document.getElementById(id).classList.remove("invalid");
+      document.getElementById("error-" + id).textContent = "";
+    });
+  });
 });

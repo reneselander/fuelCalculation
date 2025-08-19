@@ -44,4 +44,16 @@ button {
   padding-right: 5px;
   color: white;
   font-weight: bold;
+  transition: width 2s ease-in-out;
+}
+
+.input-field input.invalid {
+  border: 2px solid red;
+}
+
+.error {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 4px;
+  display: block;
 }
