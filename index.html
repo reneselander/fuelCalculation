@@ -6,28 +6,46 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Fuel Calculation</h1>
-<form id="tankForm">
-  <div class="input-field">
-    <label>Bredd (m): <input type="number" step="0.01" id="width" min="0" required /></label>
-    <span class="error" id="error-width"></span>
-  </div>
-  <div class="input-field">
-    <label>Djup (m): <input type="number" step="0.01" id="depth" min="0" required /></label>
-    <span class="error" id="error-depth"></span>
-  </div>
-  <div class="input-field">
-    <label>Höjd (m): <input type="number" step="0.01" id="height" min="0" required /></label>
-    <span class="error" id="error-height"></span>
-  </div>
-  <div class="input-field">
-    <label>Avstånd från toppen till vätskeytan (cm): <input type="number" step="0.01" id="distance" min="0" required /></label>
-    <span class="error" id="error-distance"></span>
-  </div>
-  <button type="submit">Beräkna</button>
-</form>
+  <h1>Tankberäkning</h1>
+  <form id="tankForm">
+    <div class="input-field">
+      <label>Bredd (m): <input type="text" id="width" required /></label>
+      <span class="error" id="error-width"></span>
+    </div>
+    <div class="input-field">
+      <label>Djup (m): <input type="text" id="depth" required /></label>
+      <span class="error" id="error-depth"></span>
+    </div>
+    <div class="input-field">
+      <label>Höjd (m): <input type="text" id="height" required /></label>
+      <span class="error" id="error-height"></span>
+    </div>
+    <div class="input-field">
+      <label>Avstånd från toppen till vätskeytan (cm): <input type="text" id="distance" required /></label>
+      <span class="error" id="error-distance"></span>
+    </div>
+    <div class="input-field">
+      <label>Tjocklek på toppen (mm): <input type="text" id="topThickness" required /></label>
+      <span class="error" id="error-topThickness"></span>
+    </div>
+    <div class="input-field">
+      <label>Tjocklek på väggarna (mm): <input type="text" id="wallThickness" required /></label>
+      <span class="error" id="error-wallThickness"></span>
+    </div>
+    <div class="input-field">
+      <label>Tjocklek i botten (mm): <input type="text" id="bottomThickness" required /></label>
+      <span class="error" id="error-bottomThickness"></span>
+    </div>
 
-  <div id="result"></div>
+    <button type="submit">Beräkna</button>
+
+    <!-- Resultatboxen direkt i formuläret, inte inuti input-field -->
+    <div id="result">
+      <span class="result-text"></span>
+    </div>
+
+  </form>
+
   <script src="script.js"></script>
 </body>
 </html>

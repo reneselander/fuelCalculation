@@ -1,77 +1,60 @@
 document.getElementById("tankForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const fields = ["width", "depth", "height", "distance"];
-  let hasError = false;
+  const fields = [
+    "width", "depth", "height", "distance",
+    "topThickness", "wallThickness", "bottomThickness"
+  ];
 
-  // Rensa tidigare fel
-  fields.forEach(id => {
-    document.getElementById(id).classList.remove("invalid");
-    document.getElementById("error-" + id).textContent = "";
-  });
+  let valid = true;
+  const values = {};
 
-  // Kontrollera negativa värden
   fields.forEach(id => {
-    const value = parseFloat(document.getElementById(id).value);
-    if (isNaN(value) || value < 0) {
-      document.getElementById(id).classList.add("invalid");
-      document.getElementById("error-" + id).textContent = "Värdet måste vara positivt.";
-      hasError = true;
+    const input = document.getElementById(id);
+    const error = document.getElementById("error-" + id);
+    let value = input.value.replace(",", ".");
+
+    if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+      error.textContent = "Ange ett giltigt tal med max två decimaler.";
+      valid = false;
+    } else {
+      error.textContent = "";
+      values[id] = parseFloat(value);
     }
   });
 
-  if (hasError) return;
+  if (!valid) return;
 
-  // Beräkningar
-  const wall = 0.004;
-  const width = parseFloat(document.getElementById("width").value);
-  const depth = parseFloat(document.getElementById("depth").value);
-  const height = parseFloat(document.getElementById("height").value);
-  const distance = parseFloat(document.getElementById("distance").value) / 100;
+  const topThicknessM = values.topThickness / 1000;
+  const wallThicknessM = values.wallThickness / 1000;
+  const bottomThicknessM = values.bottomThickness / 1000;
+  const distanceM = values.distance / 100;
 
-  const innerW = width - 2 * wall;
-  const innerD = depth - 2 * wall;
-  const innerH = height - wall;
-  const level = innerH - distance;
+  const innerWidth = values.width - 2 * wallThicknessM;
+  const innerDepth = values.depth - 2 * wallThicknessM;
+  const innerHeight = values.height - topThicknessM - bottomThicknessM - distanceM;
 
-  const fuel_m3 = innerW * innerD * level;
-  const total_m3 = innerW * innerD * innerH;
-  const fuel_L = fuel_m3 * 1000;
-  const pct = Math.round((fuel_m3 / total_m3) * 1000) / 10;
+  const resultBox = document.getElementById("result");
+  const resultText = document.querySelector(".result-text");
 
-  let color = "green";
-  if (pct < 20) color = "red";
-  else if (pct < 50) color = "orange";
+  if (innerWidth <= 0 || innerDepth <= 0 || innerHeight <= 0) {
+    resultBox.style.display = "block";
+    resultText.textContent = "Tankens inre mått är ogiltiga. Kontrollera att tjocklekarna inte är för stora.";
+    return;
+  }
 
-  const resultContainer = document.getElementById("result");
-  resultContainer.innerHTML = `
-    <h2>Resultat</h2>
-    <p>Bränslenivå: ${level.toFixed(2)} m</p>
-    <p>Volym: ${fuel_m3.toFixed(2)} m³ (${fuel_L.toFixed(2)} L)</p>
-    <p>Fyllnadsgrad: ${pct.toFixed(1)}%</p>
-    <div class="bar">
-      <div class="fill" id="fillBar" style="width:0%; background:${color};">${pct.toFixed(1)}%</div>
-    </div>
-    ${pct < 10 ? `<p>📦 Beställ minst ${Math.round((total_m3 * 0.99 - fuel_m3) * 1000)} L för att nå 99% fyllnad.</p>` :
-      pct < 20 ? `<p>📦 Planera bränslebeställning snart.</p>` :
-      `<p>📦 Ingen beställning behövs just nu.</p>`}
-    ${pct < 20 ? `<p>⚠️ Varning: låg bränslenivå!</p>` : ""}
-    <button id="resetBtn" style="margin-top: 1.5em;">🔄 Ny beräkning</button>
-  `;
+const volumeM3 = innerWidth * innerDepth * innerHeight;
+const volumeLiters = volumeM3 * 1000;
 
-  // Trigga animationen
-  setTimeout(() => {
-    const fillBar = document.getElementById("fillBar");
-    fillBar.style.width = `${pct}%`;
-  }, 100);
+resultBox.style.display = "block";
+resultText.innerHTML = `
+  Mängden vätska i tanken är <strong>${volumeLiters.toFixed(2)}</strong> liter.<br>
+  Motsvarande volym är <strong>${volumeM3.toFixed(2)}</strong> kubikmeter.
 
-  // Lägg till funktion för "Ny beräkning"
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    document.getElementById("tankForm").reset();
-    resultContainer.innerHTML = "";
-    fields.forEach(id => {
-      document.getElementById(id).classList.remove("invalid");
-      document.getElementById("error-" + id).textContent = "";
-    });
-  });
+  
+`;
+
+
+
+
 });
