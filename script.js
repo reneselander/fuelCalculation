@@ -49,12 +49,24 @@ const volumeLiters = volumeM3 * 1000;
 resultBox.style.display = "block";
 resultText.innerHTML = `
   Mängden vätska i tanken är <strong>${volumeLiters.toFixed(2)}</strong> liter.<br>
-  Motsvarande volym är <strong>${volumeM3.toFixed(2)}</strong> kubikmeter.
-
-  
+  Motsvarande volym är <strong>${volumeM3.toFixed(2)}</strong> kubikmeter.  
 `;
 
 
 
+
+
+const tankHeightMeters = values.height;
+const liquidHeightMeters = Math.max(0, tankHeightMeters - values.topDistance);
+const liquidRatio = liquidHeightMeters / tankHeightMeters;
+const liquidHeightPx = 300 * liquidRatio; // 300px är stapelns höjd
+
+// Uppdatera stapeln
+const liquidFill = document.getElementById("liquid-fill");
+liquidFill.style.height = `${liquidHeightPx}px`;
+
+// Uppdatera etikett
+const liquidLabel = document.getElementById("liquid-label");
+liquidLabel.textContent = `Vätskenivå: ${liquidHeightMeters.toFixed(2)} m (${(liquidRatio * 100).toFixed(1)}%)`;
 
 });
