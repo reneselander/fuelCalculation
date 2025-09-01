@@ -2,7 +2,7 @@ document.getElementById("tankForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
   const fields = [
-    "width", "depth", "height", "distance",
+    "width", "depth", "height", "density", "distance",
     "topThickness", "wallThickness", "bottomThickness"
   ];
 
@@ -14,8 +14,9 @@ document.getElementById("tankForm").addEventListener("submit", function (e) {
     const error = document.getElementById("error-" + id);
     let value = input.value.replace(",", ".");
 
-    if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-      error.textContent = "Ange ett giltigt tal med max två decimaler.";
+    // Tillåt upp till tre decimaler
+    if (!/^\d+(\.\d{1,3})?$/.test(value)) {
+      error.textContent = "Ange ett giltigt tal med max tre decimaler.";
       valid = false;
     } else {
       error.textContent = "";
@@ -43,30 +44,42 @@ document.getElementById("tankForm").addEventListener("submit", function (e) {
     return;
   }
 
-const volumeM3 = innerWidth * innerDepth * innerHeight;
-const volumeLiters = volumeM3 * 1000;
+  const volumeM3 = innerWidth * innerDepth * innerHeight;
+  const volumeLiters = volumeM3 * 1000;
+  const massKg = volumeM3 * values.density;
 
-resultBox.style.display = "block";
-resultText.innerHTML = `
-  Mängden vätska i tanken är <strong>${volumeLiters.toFixed(2)}</strong> liter.<br>
-  Motsvarande volym är <strong>${volumeM3.toFixed(2)}</strong> kubikmeter.  
-`;
+  resultBox.style.display = "block";
+  resultText.innerHTML = `
+    Mängden vätska i tanken är <strong>${volumeLiters.toFixed(2)}</strong> liter.<br>
+    Motsvarande volym är <strong>${volumeM3.toFixed(3)}</strong> kubikmeter.<br>
+    Vätskans massa är <strong>${massKg.toFixed(2)}</strong> kg.
+  `;
 
+  const tankHeightMeters = values.height;
+  const liquidHeightMeters = Math.max(0, tankHeightMeters - distanceM);
+  const liquidRatio = liquidHeightMeters / tankHeightMeters;
+  const liquidPercent = Math.round(liquidRatio * 100);
 
+  const segmentBar = document.getElementById("segment-bar");
+  segmentBar.innerHTML = "";
 
+  for (let i = 0; i < 20; i++) {
+    const segment = document.createElement("div");
+    segment.classList.add("segment");
 
+    if (i < liquidPercent / 5) {
+      if (liquidPercent >= 70) {
+        segment.classList.add("filled-green");
+      } else if (liquidPercent >= 40) {
+        segment.classList.add("filled-yellow");
+      } else {
+        segment.classList.add("filled-red");
+      }
+    }
 
-const tankHeightMeters = values.height;
-const liquidHeightMeters = Math.max(0, tankHeightMeters - values.topDistance);
-const liquidRatio = liquidHeightMeters / tankHeightMeters;
-const liquidHeightPx = 300 * liquidRatio; // 300px är stapelns höjd
+    segmentBar.appendChild(segment);
+  }
 
-// Uppdatera stapeln
-const liquidFill = document.getElementById("liquid-fill");
-liquidFill.style.height = `${liquidHeightPx}px`;
-
-// Uppdatera etikett
-const liquidLabel = document.getElementById("liquid-label");
-liquidLabel.textContent = `Vätskenivå: ${liquidHeightMeters.toFixed(2)} m (${(liquidRatio * 100).toFixed(1)}%)`;
-
+  const segmentLabel = document.getElementById("segment-label");
+  segmentLabel.textContent = `Fyllnadsgrad: ${liquidPercent}%`;
 });

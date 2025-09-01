@@ -2,51 +2,66 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tankberäkning</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Tankberäkning</h1>
-  <form id="tankForm">
-    <div class="input-field">
-      <label>Bredd (m): <input type="text" id="width" required /></label>
-      <span class="error" id="error-width"></span>
-    </div>
-    <div class="input-field">
-      <label>Djup (m): <input type="text" id="depth" required /></label>
-      <span class="error" id="error-depth"></span>
-    </div>
-    <div class="input-field">
-      <label>Höjd (m): <input type="text" id="height" required /></label>
-      <span class="error" id="error-height"></span>
-    </div>
-    <div class="input-field">
-      <label>Avstånd från toppen till vätskeytan (cm): <input type="text" id="distance" required /></label>
-      <span class="error" id="error-distance"></span>
-    </div>
-    <div class="input-field">
-      <label>Tjocklek på toppen (mm): <input type="text" id="topThickness" required /></label>
-      <span class="error" id="error-topThickness"></span>
-    </div>
-    <div class="input-field">
-      <label>Tjocklek på väggarna (mm): <input type="text" id="wallThickness" required /></label>
-      <span class="error" id="error-wallThickness"></span>
-    </div>
-    <div class="input-field">
-      <label>Tjocklek i botten (mm): <input type="text" id="bottomThickness" required /></label>
-      <span class="error" id="error-bottomThickness"></span>
-    </div>
+  <main class="app-container">
+    <h1>Tankberäkning</h1>
+    <form id="tankForm">
+      <div class="input-field">
+        <label>Bredd (m)</label>
+        <input type="text" id="width" required />
+        <span class="error" id="error-width"></span>
+      </div>
+      <div class="input-field">
+        <label>Längd (m)</label>
+        <input type="text" id="depth" required />
+        <span class="error" id="error-depth"></span>
+      </div>
+      <div class="input-field">
+        <label>Höjd (m)</label>
+        <input type="text" id="height" required />
+        <span class="error" id="error-height"></span>
+      </div>
+      <div class="input-field">
+        <label>Vätskans densitet (kg/m³)</label>
+        <input type="text" id="density" required />
+        <span class="error" id="error-density"></span>
+      </div>
+      <div class="input-field">
+        <label>Avstånd från toppen till vätskeytan (cm)</label>
+        <input type="text" id="distance" required />
+        <span class="error" id="error-distance"></span>
+      </div>
+      <div class="input-field">
+        <label>Tjocklek på toppen (mm)</label>
+        <input type="text" id="topThickness" required />
+        <span class="error" id="error-topThickness"></span>
+      </div>
+      <div class="input-field">
+        <label>Tjocklek på väggarna (mm)</label>
+        <input type="text" id="wallThickness" required />
+        <span class="error" id="error-wallThickness"></span>
+      </div>
+      <div class="input-field">
+        <label>Tjocklek i botten (mm)</label>
+        <input type="text" id="bottomThickness" required />
+        <span class="error" id="error-bottomThickness"></span>
+      </div>
 
-    <button type="submit">Beräkna</button>
+      <button type="submit">Beräkna</button>
 
-    <!-- Resultatboxen direkt i formuläret, inte inuti input-field -->
-    <div id="result">
-      <span class="result-text"></span>
-    </div>
-
-
-    
-  </form>
+      <div id="result">
+        <span class="result-text"></span>
+        <div id="segment-bar-container">
+          <div id="segment-bar"></div>
+          <div id="segment-label"></div>
+        </div>
+      </div>
+    </form>
+  </main>
   <script src="script.js"></script>
 </body>
 </html>
