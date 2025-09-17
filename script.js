@@ -51,7 +51,7 @@ document.getElementById("tankForm").addEventListener("submit", function (e) {
   resultBox.style.display = "block";
   resultText.innerHTML = `
     Mängden vätska i tanken är <strong>${volumeLiters.toFixed(2)}</strong> liter.<br>
-    Motsvarande volym är <strong>${volumeM3.toFixed(3)}</strong> kubikmeter.<br>
+    Motsvarande volym är <strong>${volumeM3.toFixed(2)}</strong> kubikmeter.<br>
     Vätskans massa är <strong>${massKg.toFixed(2)}</strong> kg.
   `;
 
